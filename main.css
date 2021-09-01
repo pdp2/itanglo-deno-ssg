@@ -45,6 +45,11 @@ code {
     line-height: 1.5;
 }
 
+.codeExampleFileName {
+	font-weight: 700;
+	text-align: right;
+}
+
 img {
     max-width: 100%;
 }
