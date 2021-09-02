@@ -17,7 +17,7 @@ for (const matchArray of includeMatches) {
 	output = output.replace(match, includeTmpl);
 }
 
-const outputPath = './index.html';
+const outputPath = './docs/index.html';
 
 console.log('Writing', outputPath);
 await Deno.writeTextFile(outputPath, output);
