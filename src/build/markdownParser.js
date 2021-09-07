@@ -1,6 +1,7 @@
 export default {
     parse(fileContent) {
-        const lines = fileContent.matchAll(/.+/g);
+        // first match is for code blocks
+        const lines = fileContent.matchAll(/```[^`]+```|.+/g);
         let output = [];
         
         for (const line of lines) {
@@ -17,10 +18,14 @@ function parseLine(line) {
     if (isHeading(line)) {
         output = parseHeading(line);
     }
-    else {
+    else if (isCodeBlock(line)) {
+        output = parseCodeBlock(line);
+    }
+    else if (canBeParagraph(line)){
         output = parseParagraph(line);
     }
 
+    output = parseInlineCode(output);
     return parseLinks(output);
 }
 
@@ -30,6 +35,15 @@ function isHeading(line) {
     return headingSyntax.some(syntax => {
         return line.indexOf(syntax) === 0;
     });
+}
+
+function canBeParagraph(line) {
+    return line.charAt(0) !== '<' && line.charAt(line.length-1) !== '>';
+}
+
+function isCodeBlock(line) {
+    const codeBlockRegEx = /```([^`]+)```/g;
+    return codeBlockRegEx.test(line);
 }
 
 function parseHeading(line) {
@@ -53,7 +67,7 @@ function parseParagraph(line) {
 }
 
 function parseLinks(content) {
-    const linkRegEx = /\[(.+)\]\((.+)\)/g;
+    const linkRegEx = /\[([^\]]+)\]\(([^\)]+)\)/g;
     const matches = content.matchAll(linkRegEx);
 
     let output = content;
@@ -63,5 +77,25 @@ function parseLinks(content) {
         output = output.replace(match, `<a href="${url}">${text}</a>`);
     }
 
+    return output;
+}
+
+function parseInlineCode(content) {
+    const codeRegEx = /`([\w\s\/\-.]+)`/g;
+    const matches = content.matchAll(codeRegEx);
+    let output = content;
+
+    for (const matchArray of matches) {
+        const [match, inlineCode] = matchArray;
+        output = output.replace(match, `<code>${inlineCode}</code>`);
+    }
+
+    return output;
+}
+
+function parseCodeBlock(content) {
+    const codeBlockRegEx = /```([^`]+)```/;
+    const match = content.match(codeBlockRegEx);
+    let output = `<pre><code>${match[1].replace(/\n*/, '')}</code></pre>`;
     return output;
 }

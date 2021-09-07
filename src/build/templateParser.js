@@ -4,14 +4,18 @@ export default {
     async parse(fileContent, data = {}, destinationPath = './docs') {
         return new Promise(async resolvePromise => {
             let output = await parseIncludes(fileContent);
+            output = await parseForLoops(output, data);
 
-            // insert data
+            // insert remaining data
             const dataKeys = Object.keys(data);
 
             dataKeys.forEach(key => {
                 const regex = new RegExp(`{{(${key})}}`);
                 const match = output.match(regex);
-                output = output.replace(match[0], data[match[1]]);
+                
+                if (match) {
+                    output = output.replace(match[0], data[match[1]]);
+                }
             });
 
             // update resource paths
@@ -42,4 +46,40 @@ async function parseIncludes(fileContent){
 	
 		resolvePromise(output);
 	});
+}
+
+async function parseForLoops(fileContent, data) {
+    return new Promise(async resolvePromise => {
+        const forLoopMatches = fileContent.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s+([\s\S]+)\<\/\1\>/g);
+        let output = fileContent;
+
+        for (const matchArray of forLoopMatches) {
+            const [match, tagName, itemName, arrayName, tmplExpression] = matchArray;
+            const loopData = data[arrayName];
+            let loopOutput = '';
+
+            if (loopData) {
+                loopData.forEach(dataItem => {
+                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
+                    const refMatches = tmplExpression.matchAll(refMatchRegEx);
+                    let content = tmplExpression;
+                    
+                    for (const refMatchArray of refMatches) {
+                        const [refMatch, dataKey] = refMatchArray;
+                        const dataToInsert = dataItem[dataKey];
+
+                        if (dataToInsert) {
+                            content = content.replace(refMatch, dataItem[dataKey]);
+                        }
+                    }
+
+                    loopOutput += `<article>${content}</article>`;
+                });
+            }
+
+            output = output.replace(match, loopOutput);
+        }
+
+        resolvePromise(output);
+    });
 }

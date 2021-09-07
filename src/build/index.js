@@ -13,7 +13,10 @@ async function buildIndexPage() {
 
         log('Reading', indexTmplPath);
         const indexTmpl = await Deno.readTextFile(indexTmplPath);
-        const output = await tmplParser.parse(indexTmpl);
+        const articles = await getPosts();
+        const output = await tmplParser.parse(indexTmpl, {
+            articles
+        });
         const outputPath = './docs/index.html';
         
         log('Writing', outputPath);
@@ -51,5 +54,53 @@ async function buildPages() {
 
         console.log('Finished buildPages \n');
         resolve();
+    });
+}
+
+async function getPosts() {
+    return new Promise(async resolvePromise => {
+        let articles = [];
+
+        const postsDirPath = './content/posts/';
+        const postsDirIter = await Deno.readDir(postsDirPath);
+        
+        for await (const dirEntry of postsDirIter) {
+            const postName = dirEntry.name;
+            const postFile = await Deno.readTextFile(`${postsDirPath}${postName}`);
+            const postContent = mdParser.parse(postFile);
+            const postDateMatch = postContent.match(/<\s+postedOn:\s*([^\n]+)/);
+            const postTitleMatch = postContent.match(/<h2>(.+)<\/h2>/);
+            let postDateTime = 0;
+            let postedDate = 'No date set';
+            let title = 'No title set';
+            let content = postContent;
+
+            if (postDateMatch && postDateMatch.length === 2) {
+                const postDate = new Date(postDateMatch[1]);
+                postDateTime = postDate.getTime();
+                postedDate = postDate.toDateString();
+            }
+
+            if (postTitleMatch && [postTitleMatch.length === 2]) {
+                title = postTitleMatch[1];
+                content = content.replace(postTitleMatch[0], '');
+            }
+
+            articles.push({
+                content,
+                postDateTime,
+                postedDate,
+                title,
+                author: 'Paolo'
+            });
+
+        }
+
+        // sort in reverse chronological order
+        articles.sort((a, b) => {
+            return b.postDateTime - a.postDateTime;
+        });
+
+        resolvePromise(articles);
     });
 }
