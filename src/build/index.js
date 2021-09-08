@@ -4,6 +4,9 @@ import log from './logger.js';
 
 await buildIndexPage();
 await buildPages();
+await buildPosts();
+
+// To do: build post pages
 
 async function buildIndexPage() {
     return new Promise(async resolve => {
@@ -37,15 +40,10 @@ async function buildPages() {
         
         for await (const dirEntry of pagesDirIter) {
             const pageName = dirEntry.name;
-            // Get page file
             const pageFile = await Deno.readTextFile(`${pagesDirPath}${pageName}`);
-            // Get page tmpl
             const pageTmpl = await Deno.readTextFile('./src/templates/page.tmpl.html');
-            // Get page content
             const pageContent = mdParser.parse(pageFile);
-            // Get output
             const output = await tmplParser.parse(pageTmpl, { content: pageContent }, destinationPath);
-            // Create output file
             const outputPath = `${destinationPath}${pageName.replace('.md', '.html')}`;
             
             log('Writing', outputPath);
@@ -53,6 +51,32 @@ async function buildPages() {
         }
 
         console.log('Finished buildPages \n');
+        resolve();
+    });
+}
+
+async function buildPosts() {
+    return new Promise(async resolve => {
+        console.log('Starting buildPosts');
+        
+        const pagesDirPath = './content/posts/';
+        const pagesDirIter = await Deno.readDir(pagesDirPath);
+        const destinationPath = './docs/posts/';
+        
+        for await (const dirEntry of pagesDirIter) {
+            const postName = dirEntry.name;
+            const postFile = await Deno.readTextFile(`${pagesDirPath}${postName}`);
+            const pageTmpl = await Deno.readTextFile('./src/templates/page.tmpl.html');
+            const postContent = mdParser.parse(postFile);
+            const output = await tmplParser.parse(pageTmpl, { content: postContent }, destinationPath);
+            // Create output file
+            const outputPath = `${destinationPath}${postName.replace('.md', '.html')}`;
+            
+            log('Writing', outputPath);
+            await Deno.writeTextFile(outputPath, output);
+        }
+
+        console.log('Finished buildPosts \n');
         resolve();
     });
 }
@@ -91,6 +115,7 @@ async function getPosts() {
                 postDateTime,
                 postedDate,
                 title,
+                postUrl: getPostUrl(title),
                 author: 'Paolo'
             });
 
@@ -103,4 +128,9 @@ async function getPosts() {
 
         resolvePromise(articles);
     });
+}
+
+function getPostUrl(title) {
+    // relative to root folder
+    return `./docs/posts/${title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '')}.html`;
 }

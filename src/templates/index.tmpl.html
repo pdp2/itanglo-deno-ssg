@@ -3,7 +3,7 @@
     <main>
         <article for="article in articles">
             <header>
-                <h2>{{article.title}}</h2>
+                <h2><a href="{{article.postUrl}}">{{article.title}}</a></h2>
                 <p class="postMeta">Posted by {{article.author}} on {{article.postedDate}}</p>
             </header>
             {{article.content}}

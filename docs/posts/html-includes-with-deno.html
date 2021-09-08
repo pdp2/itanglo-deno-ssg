@@ -7,13 +7,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="stylesheet" href="main.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="stylesheet" href="../main.css">
     <title>itanglo | Exploring web development</title>
 </head>
 <body>
     <header class="mainHeader">
-        <a href="index.html" class="homeLink">
+        <a href="../index.html" class="homeLink">
             <!-- Logo icon-->
             <svg class="logo" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="laptop-code" class="svg-inline--fa fa-laptop-code fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M255.03 261.65c6.25 6.25 16.38 6.25 22.63 0l11.31-11.31c6.25-6.25 6.25-16.38 0-22.63L253.25 192l35.71-35.72c6.25-6.25 6.25-16.38 0-22.63l-11.31-11.31c-6.25-6.25-16.38-6.25-22.63 0l-58.34 58.34c-6.25 6.25-6.25 16.38 0 22.63l58.35 58.34zm96.01-11.3l11.31 11.31c6.25 6.25 16.38 6.25 22.63 0l58.34-58.34c6.25-6.25 6.25-16.38 0-22.63l-58.34-58.34c-6.25-6.25-16.38-6.25-22.63 0l-11.31 11.31c-6.25 6.25-6.25 16.38 0 22.63L386.75 192l-35.71 35.72c-6.25 6.25-6.25 16.38 0 22.63zM624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z"></path></svg>
             <!-- End logo icon -->
@@ -23,21 +23,18 @@
             </div>
         </a>
         <nav class="mainNav">
-            <a href="about.html">About</a>
+            <a href="../about.html">About</a>
             <a href="https://github.com/pdp2">Github</a>
         </nav>
     </header>
 
     <main>
-        <article><header>
-                <h2><a href="posts/html-includes-with-deno.html">HTML includes with Deno</a></h2>
-                <p class="postMeta">Posted by Paolo on Wed Sep 01 2021</p>
-            </header>
+        <article>
             <!--
 < postedOn: 2021-09-01
 < postedBy: Paolo
 -->
-
+<h2>HTML includes with Deno</h2>
 <p>Seen as I have decided to build this blog from the ground up, one of the first challenges to solve is how to include common blocks of HTML which are used in multiple places across the website. This is a good idea because it avoids duplication, which in turn means that it's easier to maintain because we only need to change these common blocks in one place.</p>
 <p>If I was using a content management system like WordPress this would all be handled for me, but I didn't really want to have to pay for hosting and besides it will be fun to have a go at doing it another way. I had a read of <a href="https://css-tricks.com/the-simplest-ways-to-handle-html-includes/">Chris Coyier's post</a> on the topic, which covered a lot of different ways we can achieve this, however there wasn't an option that used <a href="https://deno.land/">Deno</a> so I thought I would use it as an excercise to learn more about it.</p>
 <p>Deno is a secure runtime for JavaScript and TypeScript developed by Ryan Dahl who created the ubiquitous <a href="https://nodejs.org/en/">Node.js</a> runtime. One of the differences when using Deno is that by default scripts don't automatically have file or network access. If a script needs access to the network or the file system this has to be specificed when running the program using runtime flags. Another difference that I'm quite keen on is that Deno gets rid of the concept of the <code>node_modules</code> folder. I have always seen this as a black hole of dependencies that I dare not peek inside. With Node.js we needed the <code>package.json</code> file to manage all the various dependencies, however in Deno you can import modules using a URL.</p>
@@ -161,17 +158,6 @@ await Deno.writeTextFile('index.html', output);
 <pre><code>deno run --allow-read --allow-write build.js
 </code></pre>
 <p>You can find all the code referenced in this post in <a href="https://github.com/pdp2/deno-html-includes">this repo</a>. Thanks for reading.</p>
-        </article><article><header>
-                <h2><a href="posts/hello-world.html">Hello world!</a></h2>
-                <p class="postMeta">Posted by Paolo on Wed Aug 11 2021</p>
-            </header>
-            <!--
-< postedOn: 2021-08-11
-< postedBy: Paolo
--->
-
-<p>Testing, testing, is this thing on?</p>
-<p>Seems to be working, or at least, it works for me!</p>
         </article>
     </main>
 
