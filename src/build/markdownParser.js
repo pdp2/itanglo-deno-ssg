@@ -26,7 +26,10 @@ function parseLine(line) {
     }
 
     output = parseInlineCode(output);
-    return parseLinks(output);
+    output = parseImg(output);
+    output = parseLinks(output);
+
+    return output;
 }
 
 function isHeading(line) {
@@ -97,5 +100,18 @@ function parseCodeBlock(content) {
     const codeBlockRegEx = /```([^`]+)```/;
     const match = content.match(codeBlockRegEx);
     let output = `<pre><code>${match[1].replace(/\n*/, '')}</code></pre>`;
+    return output;
+}
+
+function parseImg(content) {
+    const imgRegEx = /!\[([^\]]+)\]\(([^\)]+)\)/g;
+    const matches = content.matchAll(imgRegEx);
+    let output = content;
+
+    for (const matchArray of matches) {
+        const [match, altText, imgPath] = matchArray;
+        output = output.replace(match, `<img src="${imgPath}" alt="${altText}">`);
+    }
+
     return output;
 }

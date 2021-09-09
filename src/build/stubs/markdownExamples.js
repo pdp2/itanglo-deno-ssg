@@ -20,7 +20,7 @@ const codeBlockMd = '```\nconst codeBlock = true;\nconst multiLine=true;\n// sho
 const codeBlockHtml = '<pre><code>const codeBlock = true;\nconst multiLine=true;\n// should be inside pre and code tags\n</code></pre>';
 
 const imgMd = '![Alt text](/path/to/img.jpg)';
-const imgHtml = '<img src="/path/to/img.jpg" alt="Alt text">';
+const imgHtml = '<p><img src="/path/to/img.jpg" alt="Alt text"></p>';
 
 export default {
     h1Md, h1Html, h2Md, h2Html, h3Md, h3Html, pMd, pHtml, aMd, aHtml, codeMd, codeHtml, codeBlockMd, codeBlockHtml, imgMd, imgHtml
