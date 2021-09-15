@@ -36,7 +36,7 @@ async function buildPages() {
         
         const pagesDirPath = './content/pages/';
         const pagesDirIter = await Deno.readDir(pagesDirPath);
-        const destinationPath = './docs/pages/';
+        const destinationPath = './docs/';
         
         for await (const dirEntry of pagesDirIter) {
             const pageName = dirEntry.name;
