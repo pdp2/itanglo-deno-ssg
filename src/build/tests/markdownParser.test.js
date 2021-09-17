@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.106.0/testing/asserts.ts";
-import mdParser from './markdownParser.js';
+import mdParser from '../markdownParser.js';
 import mdExamples from './stubs/markdownExamples.js';
 
 
