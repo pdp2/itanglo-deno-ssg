@@ -44,33 +44,15 @@ async function parseForLoops(tmplStr, data) {
 
             for (const dataItem of loopData) {
                 let loopItemOutput = loopTmplStr;
+                loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
 
                 if (typeof dataItem === 'string') {
-                    loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
-
-                    const refMatchRegEx = new RegExp(`{{${itemName}}}`, 'g');
-                    const refMatches = loopTmplStr.matchAll(refMatchRegEx);
-
-                    if (refMatches) {
-                        for (const refMatchArray of refMatches) {
-                            loopItemOutput = loopItemOutput.replace(refMatchArray[0], dataItem);
-                        }
-                    }
+                    loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}}}`, 'g'), dataItem);
                 }
                 else {
-                    loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
-
-                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
-                    const refMatches = [...loopTmplStr.matchAll(refMatchRegEx)];
-
-                    for (const refMatchArray of refMatches) {
-                        const [refMatch, dataKey] = refMatchArray;
-                        const dataToInsert = dataItem[dataKey];
-
-                        if (dataToInsert) {
-                            loopItemOutput = loopItemOutput.replace(refMatch, dataToInsert);
-                        }
-                    }   
+                    loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, p1) => {
+                        return dataItem[p1];
+                    });
                 }
 
                 loopOutput += `<${tagName}>${loopItemOutput}</${tagName}>`;
