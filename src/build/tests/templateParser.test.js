@@ -15,6 +15,11 @@ Deno.test('should render a basic include', async () => {
 
 Deno.test('should render a for loop', async () => {
     const expected = '<div>Uno</div><div>Due</div><div>Tre</div>';
-    const result = await tmplParser.parse('<div for="item in items">{{item.text}}</div>', { items: [{text: 'Uno'}, {text: 'Due'}, {text: 'Tre'}] });
+    let result = await tmplParser.parse('<div for="item in items">{{item.text}}</div>', { items: [{text: 'Uno'}, {text: 'Due'}, {text: 'Tre'}] });
+    
+    assertEquals(result, expected);
+
+    result = await tmplParser.parse('<div for="item in items">{{item}}</div>', { items: ['Uno', 'Due', 'Tre'] });
+
     assertEquals(result, expected);
 });

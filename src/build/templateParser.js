@@ -1,10 +1,11 @@
 import { relative } from "https://deno.land/std@0.106.0/path/mod.ts";
 
 export default {
-    async parse(fileContent, data = {}, destinationPath = './docs') {
+    async parse(tmplStr, data = {}, destinationPath = './docs') {
         return new Promise(async resolvePromise => {
-            let output = await parseIncludes(fileContent);
+            let output = tmplStr;
             output = await parseForLoops(output, data);
+            output = await parseIncludes(output);
 
             // insert remaining data
             const dataKeys = Object.keys(data);
@@ -31,12 +32,12 @@ export default {
     }
 }
 
-async function parseIncludes(fileContent){
+async function parseIncludes(tmplStr){
 	return new Promise(async resolvePromise => {
 		// matchAll returns a RegExp iterator
-		const includeMatches = fileContent.matchAll(/<include src="([./\w-]+.tmpl.html)">/g);
+		const includeMatches = tmplStr.matchAll(/<include src="([./\w-]+.tmpl.html)">/g);
 	
-		let output = fileContent;
+		let output = tmplStr;
 	
 		for (const matchArray of includeMatches) {
 			const [match, path] = matchArray;
@@ -48,36 +49,49 @@ async function parseIncludes(fileContent){
 	});
 }
 
-async function parseForLoops(fileContent, data) {
+async function parseForLoops(tmplStr, data) {
     return new Promise(async resolvePromise => {
-        const forLoopMatches = fileContent.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s*([\s\S]+)\<\/\1\>/g);
-        let output = fileContent;
+        const forLoopMatches = [...tmplStr.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s*([\s\S]+)\<\/\1\>/g)];
+        let output = tmplStr;
 
-        for (const matchArray of forLoopMatches) {
-            const [match, tagName, itemName, arrayName, tmplExpression] = matchArray;
-            const loopData = data[arrayName];
-            let loopOutput = '';
+        if (forLoopMatches.length) {
+            for (const match of forLoopMatches) {
+                const [matchStr, tagName, itemName, arrayName, loopTmplStr] = match;
+                const loopData = data[arrayName];
+                let loopOutput = '';
+    
+                for (const dataItem of loopData) {
+                    let loopItemOutput = loopTmplStr;
 
-            if (loopData) {
-                loopData.forEach(dataItem => {
-                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
-                    const refMatches = tmplExpression.matchAll(refMatchRegEx);
-                    let content = tmplExpression;
-                    
-                    for (const refMatchArray of refMatches) {
-                        const [refMatch, dataKey] = refMatchArray;
-                        const dataToInsert = dataItem[dataKey];
+                    if (typeof dataItem === 'string') {
+                        const refMatchRegEx = new RegExp(`{{${itemName}}}`, 'g');
+                        const refMatches = loopTmplStr.matchAll(refMatchRegEx);
 
-                        if (dataToInsert) {
-                            content = content.replace(refMatch, dataItem[dataKey]);
+                        if (refMatches) {
+                            for (const refMatchArray of refMatches) {
+                                loopItemOutput = loopItemOutput.replace(refMatchArray[0], dataItem);
+                            }
                         }
                     }
+                    else {
+                        const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
+                        const refMatches = [...loopTmplStr.matchAll(refMatchRegEx)];
 
-                    loopOutput += `<${tagName}>${content}</${tagName}>`;
-                });
+                        for (const refMatchArray of refMatches) {
+                            const [refMatch, dataKey] = refMatchArray;
+                            const dataToInsert = dataItem[dataKey];
+    
+                            if (dataToInsert) {
+                                loopItemOutput = loopItemOutput.replace(refMatch, dataToInsert);
+                            }
+                        }   
+                    }
+
+                    loopOutput += `<${tagName}>${loopItemOutput}</${tagName}>`;
+                }
+    
+                output = output.replace(matchStr, loopOutput);
             }
-
-            output = output.replace(match, loopOutput);
         }
 
         resolvePromise(output);
