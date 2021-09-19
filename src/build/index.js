@@ -10,7 +10,7 @@ await buildPosts();
 
 async function buildIndexPage() {
     return new Promise(async resolve => {
-        console.log('Starting buildIndexPage');
+        log('Starting buildIndexPage');
         
         const indexTmplPath = './src/templates/index.tmpl.html';
 
@@ -25,14 +25,14 @@ async function buildIndexPage() {
         log('Writing', outputPath);
         await Deno.writeTextFile(outputPath, output);
         
-        console.log('Finished buildIndexPage \n');
+        log('Finished buildIndexPage');
         resolve();
     });
 }
 
 async function buildPages() {
     return new Promise(async resolve => {
-        console.log('Starting buildPages');
+        log('Starting buildPages');
         
         const pagesDirPath = './content/pages/';
         const pagesDirIter = await Deno.readDir(pagesDirPath);
@@ -50,14 +50,14 @@ async function buildPages() {
             await Deno.writeTextFile(outputPath, output);
         }
 
-        console.log('Finished buildPages \n');
+        log('Finished buildPages');
         resolve();
     });
 }
 
 async function buildPosts() {
     return new Promise(async resolve => {
-        console.log('Starting buildPosts');
+        log('Starting buildPosts');
         
         const pagesDirPath = './content/posts/';
         const pagesDirIter = await Deno.readDir(pagesDirPath);
@@ -76,7 +76,7 @@ async function buildPosts() {
             await Deno.writeTextFile(outputPath, output);
         }
 
-        console.log('Finished buildPosts \n');
+        log('Finished buildPosts');
         resolve();
     });
 }
