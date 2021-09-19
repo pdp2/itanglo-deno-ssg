@@ -91,22 +91,14 @@ async function parseIncludes(tmplStr, itemName, dataItem){
         for (const match of includeMatches) {
             const [matchStr, path, key] = match;
             let includeTmplStr = await Deno.readTextFile(path);
-            if (key === itemName) {
+            if (dataItem && key === itemName) {
                 if (typeof dataItem === 'string') {
                     includeTmplStr = includeTmplStr.replace(new RegExp(`{{${key}}}`, 'g'), dataItem);
                 }
                 else {
-                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
-                    const refMatches = [...includeTmplStr.matchAll(refMatchRegEx)];
-
-                    for (const refMatch of refMatches) {
-                        const [refMatchStr, dataKey] = refMatch;
-                        const dataToInsert = dataItem[dataKey];
-
-                        if (dataToInsert) {
-                            includeTmplStr = includeTmplStr.replace(refMatchStr, dataToInsert);
-                        }
-                    }   
+                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, p1) => {
+                        return dataItem[p1];
+                    });
                 }
             }
 
