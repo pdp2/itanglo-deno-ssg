@@ -50,8 +50,8 @@ async function parseForLoops(tmplStr, data) {
                     loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}}}`, 'g'), dataItem);
                 }
                 else {
-                    loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, p1) => {
-                        return dataItem[p1];
+                    loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, key) => {
+                        return dataItem[key];
                     });
                 }
 
@@ -78,8 +78,8 @@ async function parseIncludes(tmplStr, itemName, dataItem){
                     includeTmplStr = includeTmplStr.replace(new RegExp(`{{${key}}}`, 'g'), dataItem);
                 }
                 else {
-                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, p1) => {
-                        return dataItem[p1];
+                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, key) => {
+                        return dataItem[key];
                     });
                 }
             }
