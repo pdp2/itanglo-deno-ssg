@@ -50,7 +50,7 @@ async function parseIncludes(fileContent){
 
 async function parseForLoops(fileContent, data) {
     return new Promise(async resolvePromise => {
-        const forLoopMatches = fileContent.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s+([\s\S]+)\<\/\1\>/g);
+        const forLoopMatches = fileContent.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s*([\s\S]+)\<\/\1\>/g);
         let output = fileContent;
 
         for (const matchArray of forLoopMatches) {
@@ -73,7 +73,7 @@ async function parseForLoops(fileContent, data) {
                         }
                     }
 
-                    loopOutput += `<article>${content}</article>`;
+                    loopOutput += `<${tagName}>${content}</${tagName}>`;
                 });
             }
 
