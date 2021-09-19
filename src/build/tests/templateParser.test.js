@@ -23,3 +23,13 @@ Deno.test('should render a for loop', async () => {
 
     assertEquals(result, expected);
 });
+
+Deno.test('should render a for loop with an include and data', async () => {
+    const expected = '<div><p>First</p></div><div><p>Second</p></div><div><p>Third</p></div>';
+    let result = await tmplParser.parse('<div for="item in items"><include src="./src/build/tests/templates/include-with-data.tmpl.html" data="item"></div>', { items: ['First', 'Second', 'Third']});
+    assertEquals(result, expected);
+
+    result = await tmplParser.parse('<div for="item in items"><include src="./src/build/tests/templates/include-with-data-2.tmpl.html" data="item"></div>', { items: [{text: 'First'}, {text:'Second'}, {text:'Third'}]});
+
+    assertEquals(result, expected);
+});

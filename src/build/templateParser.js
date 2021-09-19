@@ -32,68 +32,87 @@ export default {
     }
 }
 
-async function parseIncludes(tmplStr){
-	return new Promise(async resolvePromise => {
-		// matchAll returns a RegExp iterator
-		const includeMatches = tmplStr.matchAll(/<include src="([./\w-]+.tmpl.html)">/g);
-	
-		let output = tmplStr;
-	
-		for (const matchArray of includeMatches) {
-			const [match, path] = matchArray;
-			const includeTmpl = await Deno.readTextFile(path);
-			output = output.replace(match, includeTmpl);
-		}
-	
-		resolvePromise(output);
-	});
-}
-
 async function parseForLoops(tmplStr, data) {
     return new Promise(async resolvePromise => {
         const forLoopMatches = [...tmplStr.matchAll(/\<(\w+)\s+for="(\w+)\s+in\s+(\w+)"\>\s*([\s\S]+)\<\/\1\>/g)];
         let output = tmplStr;
 
-        if (forLoopMatches.length) {
-            for (const match of forLoopMatches) {
-                const [matchStr, tagName, itemName, arrayName, loopTmplStr] = match;
-                const loopData = data[arrayName];
-                let loopOutput = '';
-    
-                for (const dataItem of loopData) {
-                    let loopItemOutput = loopTmplStr;
+        for (const match of forLoopMatches) {
+            const [matchStr, tagName, itemName, arrayName, loopTmplStr] = match;
+            const loopData = data[arrayName] || [];
+            let loopOutput = '';
 
-                    if (typeof dataItem === 'string') {
-                        const refMatchRegEx = new RegExp(`{{${itemName}}}`, 'g');
-                        const refMatches = loopTmplStr.matchAll(refMatchRegEx);
+            for (const dataItem of loopData) {
+                let loopItemOutput = loopTmplStr;
 
-                        if (refMatches) {
-                            for (const refMatchArray of refMatches) {
-                                loopItemOutput = loopItemOutput.replace(refMatchArray[0], dataItem);
-                            }
+                if (typeof dataItem === 'string') {
+                    loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
+
+                    const refMatchRegEx = new RegExp(`{{${itemName}}}`, 'g');
+                    const refMatches = loopTmplStr.matchAll(refMatchRegEx);
+
+                    if (refMatches) {
+                        for (const refMatchArray of refMatches) {
+                            loopItemOutput = loopItemOutput.replace(refMatchArray[0], dataItem);
                         }
                     }
-                    else {
-                        const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
-                        const refMatches = [...loopTmplStr.matchAll(refMatchRegEx)];
-
-                        for (const refMatchArray of refMatches) {
-                            const [refMatch, dataKey] = refMatchArray;
-                            const dataToInsert = dataItem[dataKey];
-    
-                            if (dataToInsert) {
-                                loopItemOutput = loopItemOutput.replace(refMatch, dataToInsert);
-                            }
-                        }   
-                    }
-
-                    loopOutput += `<${tagName}>${loopItemOutput}</${tagName}>`;
                 }
-    
-                output = output.replace(matchStr, loopOutput);
+                else {
+                    loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
+
+                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
+                    const refMatches = [...loopTmplStr.matchAll(refMatchRegEx)];
+
+                    for (const refMatchArray of refMatches) {
+                        const [refMatch, dataKey] = refMatchArray;
+                        const dataToInsert = dataItem[dataKey];
+
+                        if (dataToInsert) {
+                            loopItemOutput = loopItemOutput.replace(refMatch, dataToInsert);
+                        }
+                    }   
+                }
+
+                loopOutput += `<${tagName}>${loopItemOutput}</${tagName}>`;
             }
+
+            output = output.replace(matchStr, loopOutput);
         }
 
+        resolvePromise(output);
+    });
+}
+
+async function parseIncludes(tmplStr, itemName, dataItem){
+    return new Promise(async resolvePromise => {
+        const includeMatches = [...tmplStr.matchAll(/<include src="([./\w-]+.tmpl.html)"\s*(?:data="(\w+)")?>/g)];
+        let output = tmplStr;
+    
+        for (const match of includeMatches) {
+            const [matchStr, path, key] = match;
+            let includeTmplStr = await Deno.readTextFile(path);
+            if (key === itemName) {
+                if (typeof dataItem === 'string') {
+                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${key}}}`, 'g'), dataItem);
+                }
+                else {
+                    const refMatchRegEx = new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g');
+                    const refMatches = [...includeTmplStr.matchAll(refMatchRegEx)];
+
+                    for (const refMatch of refMatches) {
+                        const [refMatchStr, dataKey] = refMatch;
+                        const dataToInsert = dataItem[dataKey];
+
+                        if (dataToInsert) {
+                            includeTmplStr = includeTmplStr.replace(refMatchStr, dataToInsert);
+                        }
+                    }   
+                }
+            }
+
+            output = output.replace(matchStr, includeTmplStr);
+        }
+    
         resolvePromise(output);
     });
 }
