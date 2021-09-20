@@ -66,9 +66,10 @@ async function buildPosts() {
         for await (const dirEntry of pagesDirIter) {
             const postName = dirEntry.name;
             const postFile = await Deno.readTextFile(`${pagesDirPath}${postName}`);
-            const pageTmpl = await Deno.readTextFile('./src/templates/page.tmpl.html');
+            const pageTmpl = await Deno.readTextFile('./src/templates/post.tmpl.html');
             const postContent = mdParser.parse(postFile);
-            const output = await tmplParser.parse(pageTmpl, { content: postContent }, destinationPath);
+            const article = getPost(postContent);
+            const output = await tmplParser.parse(pageTmpl, { article }, destinationPath);
             // Create output file
             const outputPath = `${destinationPath}${postName.replace('.md', '.html')}`;
             
@@ -92,33 +93,9 @@ async function getPosts() {
             const postName = dirEntry.name;
             const postFile = await Deno.readTextFile(`${postsDirPath}${postName}`);
             const postContent = mdParser.parse(postFile);
-            const postDateMatch = postContent.match(/<\s+postedOn:\s*([^\n]+)/);
-            const postTitleMatch = postContent.match(/<h2>(.+)<\/h2>/);
-            let postDateTime = 0;
-            let postedDate = 'No date set';
-            let title = 'No title set';
-            let content = postContent;
-
-            if (postDateMatch && postDateMatch.length === 2) {
-                const postDate = new Date(postDateMatch[1]);
-                postDateTime = postDate.getTime();
-                postedDate = postDate.toDateString();
-            }
-
-            if (postTitleMatch && [postTitleMatch.length === 2]) {
-                title = postTitleMatch[1];
-                content = content.replace(postTitleMatch[0], '');
-            }
-
-            articles.push({
-                content,
-                postDateTime,
-                postedDate,
-                title,
-                postUrl: getPostUrl(title),
-                author: 'Paolo'
-            });
-
+            const post = getPost(postContent);
+            
+            articles.push(post);
         }
 
         // sort in reverse chronological order
@@ -133,4 +110,39 @@ async function getPosts() {
 function getPostUrl(title) {
     // relative to root folder
     return `./docs/posts/${title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '')}.html`;
+}
+
+function getPost(postFileStr) {
+    const postDateMatch = postFileStr.match(/<\s+postedOn:\s*([^\n]+)/);
+    const postedByMatch = postFileStr.match(/<\s+postedBy:\s*([^\n]+)/);
+    const postTitleMatch = postFileStr.match(/<h2>(.+)<\/h2>/);
+    let postDateTime = 0;
+    let postedDate = 'No date set';
+    let title = 'No title set';
+    let author = 'No author set';
+    let content = postFileStr;
+
+    if (postDateMatch && postDateMatch.length === 2) {
+        const postDate = new Date(postDateMatch[1]);
+        postDateTime = postDate.getTime();
+        postedDate = postDate.toDateString();
+    }
+
+    if (postTitleMatch && postTitleMatch.length === 2) {
+        title = postTitleMatch[1];
+        content = content.replace(postTitleMatch[0], '');
+    }
+
+    if (postedByMatch && postedByMatch.length === 2) {
+        author = postedByMatch[1];
+    }
+
+    return {
+        content,
+        postDateTime,
+        postedDate,
+        title,
+        author,
+        postUrl: getPostUrl(title),
+    };
 }

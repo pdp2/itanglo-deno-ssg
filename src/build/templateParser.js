@@ -5,19 +5,30 @@ export default {
         return new Promise(async resolvePromise => {
             let output = tmplStr;
             output = await parseForLoops(output, data);
-            output = await parseIncludes(output);
+            output = await parseIncludes(output, data);
 
             // insert remaining data
             const dataKeys = Object.keys(data);
 
-            dataKeys.forEach(key => {
-                const regex = new RegExp(`{{(${key})}}`);
-                const match = output.match(regex);
-                
-                if (match) {
-                    output = output.replace(match[0], data[match[1]]);
+            for (const key of dataKeys) {
+                if (typeof data[key] === 'string') {
+                    const regex = new RegExp(`{{(${key})}}`);
+                    
+                    output = output.replace(regex, () => {
+                        return data[key];
+                    });
                 }
-            });
+                else if (typeof data[key] === 'object') {
+                    const objName = key;
+                    const objProps = Object.keys(data[key]);
+
+                    for (const prop of objProps) {
+                        output = output.replace(new RegExp(`{{${objName}\\.${prop}}}`, 'g'), () => {
+                            return data[objName][prop];
+                        });
+                    }
+                }
+            }
 
             // update resource paths
             const pathMatches = output.matchAll(/href="(\.\/[a-zA-Z0-9\-\/\.]+)"/g);
@@ -44,7 +55,7 @@ async function parseForLoops(tmplStr, data) {
 
             for (const dataItem of loopData) {
                 let loopItemOutput = loopTmplStr;
-                loopItemOutput = await parseIncludes(loopItemOutput, itemName, dataItem);
+                loopItemOutput = await parseIncludes(loopItemOutput, dataItem, itemName);
 
                 if (typeof dataItem === 'string') {
                     loopItemOutput = loopItemOutput.replace(new RegExp(`{{${itemName}}}`, 'g'), dataItem);
@@ -65,21 +76,25 @@ async function parseForLoops(tmplStr, data) {
     });
 }
 
-async function parseIncludes(tmplStr, itemName, dataItem){
+async function parseIncludes(tmplStr, dataItem, itemName ){
     return new Promise(async resolvePromise => {
         const includeMatches = [...tmplStr.matchAll(/<include src="([./\w-]+.tmpl.html)"\s*(?:data="(\w+)")?>/g)];
         let output = tmplStr;
     
         for (const match of includeMatches) {
             const [matchStr, path, key] = match;
+
             let includeTmplStr = await Deno.readTextFile(path);
-            if (dataItem && key === itemName) {
-                if (typeof dataItem === 'string') {
-                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${key}}}`, 'g'), dataItem);
-                }
-                else {
-                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{${itemName}\\.(\\w+)}}`, 'g'), (match, key) => {
-                        return dataItem[key];
+
+            if (typeof dataItem === 'string' && key === itemName) {
+                includeTmplStr = includeTmplStr.replace(new RegExp(`{{${key}}}`, 'g'), dataItem);
+            }
+            else if (typeof dataItem === 'object') {
+                const dataKeys = Object.keys(dataItem);
+
+                for (const key of dataKeys) {
+                    includeTmplStr = includeTmplStr.replace(new RegExp(`{{(${key})\\.(\\w+)}}`, 'g'), (match, key, prop) => {
+                        return dataItem[key][prop];
                     });
                 }
             }
