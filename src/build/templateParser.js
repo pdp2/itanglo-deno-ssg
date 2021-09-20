@@ -31,7 +31,7 @@ export default {
             }
 
             // update resource paths
-            const pathMatches = output.matchAll(/href="(\.\/[a-zA-Z0-9\-\/\.]+)"/g);
+            const pathMatches = output.matchAll(/(?:href|img src)="(\.\/[a-zA-Z0-9\-\/\.]+)"/g);
 
             for (const match of pathMatches) {
                 const path = match[1];

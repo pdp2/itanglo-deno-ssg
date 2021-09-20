@@ -118,7 +118,7 @@ const indexTmplStr = decoder.decode(indexTmplData);
 </code></pre>
 <p>The part in bold is the variable part, the rest of it stays the same for each instance of the include tag. This is where regular expressions come in handy because they allow us to match a given pattern using a special syntax.</p>
 <p>I have come across people that are absolute wizards with regular expressions and they can come up with them pretty much on the spot. Sadly, although I have some redeeming qualities, I am not one of them. For the most part I rely on trial and error and <a href="https://regexr.com/">regexr.com</a>.</p>
-<p><img src="./images/regexr-screenshot.jpg" alt="Screenshot of the regexr.com website"></p>
+<p><img src="../images/regexr-screenshot.jpg" alt="Screenshot of the regexr.com website"></p>
 <p>In the screenshot above, hopefully you can just about make out the regexr.com website. In the middle section I have pasted the contents of the <code>index.tmpl.html</code> file. If you look closely at the screenshot you will see that just under the heading "Expression" with the light blue background, there is a regular expression that was there by default and it looks like this:</p>
 <pre><code>/([A-Z])\w+/g
 </code></pre>
@@ -130,7 +130,7 @@ const indexTmplStr = decoder.decode(indexTmplData);
 <pre><code>&lt;include src="<strong>[./\w-]+</strong>.tmpl.html"&gt;/g
 </code></pre>
 <p>The part in bold shows the part that has changed. We have added a character set using the square brackets and inside we have specified that the allowed characters should be a period, forward slash, an alphanumeric word character and a hyphen. Outside the brackets there is a plus symbol to stipulate there should be one or more of the characters matched in the set. That seems to have done the trick, both of the includes should now be highlighted to indicate that they are matches as shown in the screenshot below: </p>
-<p><img src="./images/regexr-screenshot-2.jpg" alt="Screenshot of the regexr.com website"></p>
+<p><img src="../images/regexr-screenshot-2.jpg" alt="Screenshot of the regexr.com website"></p>
 <p>We now have the index template string and the regex which will match instances of the include tag. We can use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll">matchAll()</a> method which we can pass a regex to and will return an iterator of matches that we can loop through with the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of">for...of</a> syntax as shown below.</p>
 <pre><code>...
 

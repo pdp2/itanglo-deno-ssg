@@ -132,7 +132,7 @@ The part in bold is the variable part, the rest of it stays the same for each in
 
 I have come across people that are absolute wizards with regular expressions and they can come up with them pretty much on the spot. Sadly, although I have some redeeming qualities, I am not one of them. For the most part I rely on trial and error and [regexr.com](https://regexr.com/).
 
-![Screenshot of the regexr.com website](./images/regexr-screenshot.jpg)
+![Screenshot of the regexr.com website](./docs/images/regexr-screenshot.jpg)
 
 In the screenshot above, hopefully you can just about make out the regexr.com website. In the middle section I have pasted the contents of the `index.tmpl.html` file. If you look closely at the screenshot you will see that just under the heading "Expression" with the light blue background, there is a regular expression that was there by default and it looks like this:
 
@@ -156,7 +156,7 @@ Currently it doesn't match anything because the includes we have in our content 
 
 The part in bold shows the part that has changed. We have added a character set using the square brackets and inside we have specified that the allowed characters should be a period, forward slash, an alphanumeric word character and a hyphen. Outside the brackets there is a plus symbol to stipulate there should be one or more of the characters matched in the set. That seems to have done the trick, both of the includes should now be highlighted to indicate that they are matches as shown in the screenshot below: 
 
-![Screenshot of the regexr.com website](./images/regexr-screenshot-2.jpg)
+![Screenshot of the regexr.com website](./docs/images/regexr-screenshot-2.jpg)
 
 We now have the index template string and the regex which will match instances of the include tag. We can use the [matchAll()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll) method which we can pass a regex to and will return an iterator of matches that we can loop through with the [for...of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) syntax as shown below.
 
