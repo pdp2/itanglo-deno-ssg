@@ -84,7 +84,7 @@ function parseLinks(content) {
 }
 
 function parseInlineCode(content) {
-    const codeRegEx = /`([\w\s\/\-.]+)`/g;
+    const codeRegEx = /`([^`]+)`/g;
     const matches = content.matchAll(codeRegEx);
     let output = content;
 
