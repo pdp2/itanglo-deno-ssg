@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="stylesheet" href="../main.css">
+    <title>itanglo | Exploring web development</title>
+</head>
+<body>
+    <header class="mainHeader">
+        <a href="../index.html" class="homeLink">
+            <!-- Logo icon-->
+            <svg class="logo" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="laptop-code" class="svg-inline--fa fa-laptop-code fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M255.03 261.65c6.25 6.25 16.38 6.25 22.63 0l11.31-11.31c6.25-6.25 6.25-16.38 0-22.63L253.25 192l35.71-35.72c6.25-6.25 6.25-16.38 0-22.63l-11.31-11.31c-6.25-6.25-16.38-6.25-22.63 0l-58.34 58.34c-6.25 6.25-6.25 16.38 0 22.63l58.35 58.34zm96.01-11.3l11.31 11.31c6.25 6.25 16.38 6.25 22.63 0l58.34-58.34c6.25-6.25 6.25-16.38 0-22.63l-58.34-58.34c-6.25-6.25-16.38-6.25-22.63 0l-11.31 11.31c-6.25 6.25-6.25 16.38 0 22.63L386.75 192l-35.71 35.72c-6.25 6.25-6.25 16.38 0 22.63zM624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z"></path></svg>
+            <!-- End logo icon -->
+            <div>
+                <h1>itanglo</h1>
+                <p class="tagline">Exploring the craft of web development</p>
+            </div>
+        </a>
+        <nav class="mainNav">
+            <a href="../about.html">About</a>
+            <a href="https://github.com/pdp2">Github</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <header>
+    <h2><a href="making-a-website.html">Making a website</a></h2>
+    <p class="postMeta">Posted by Paolo on Wed Oct 06 2021</p>
+</header>
+            <!--
+< postedOn: 2021-10-06
+< postedBy: Paolo
+-->
+
+<p>I was a bit stuck for things to write about, and I always resisted this idea because I thought it was too obvious, but sometimes obvious can be good. My plan is to write a series of posts that will go through the process of making a website. We will create a design brief for a hypothetical client and then plan out how we can go about completing the project.</p>
+<h3>The brief</h3>
+<p>Our client is a local library for a fictional town called Lorem on Ipsum. They haven't had a website before but they would like to provide a system for the town folk to check what books are available, if they are currently loaned out and to reserve them. They would also like to list events that are taking place at the library and provide blog posts with book recommendations and other interesting content. The website should also provide  information about the library, how to contact them and a Frequently Answered Questions (FAQs) section to make it easier for users to find the information they are looking for. The content should be managed by a Content Management System (CMS) and this will be used by the library team that consists of three members of staff including Mrs Beale, library manager, Mr Grey, senior librarian and Miss Tobin the part-time library assistant. </p>
+<h3>Getting set up</h3>
+<p>When I first set foot in the wonderful world of web development, one of the things that surprised me is actually how little you need to start making websites. Over time as you acquire new skills and learn about different technologies you can add to your stack of tools, but to begin with all you need to get going is a web browser and a code editor. I personally use <a href="https://www.google.com/intl/en_uk/chrome/">Chrome</a> as my web browser and <a href="https://code.visualstudio.com/">VS Code</a> as my code editor. Of course, you can choose whatever you like from the many options available.</p>
+<h3>A simple web page</h3>
+<p>Websites are a collection of files that are provided by servers connected to the world wide web and accessed via your web browser. The main content of a website is contained in HTML files, which stands for HyperText Markup Language and is the standard language for displaying documents in web browsers. In future posts I plan to write about other languages that are used to build websites such as Cascading Style Sheets (CSS) and JavaScript (JS), but to begin with, all we need to start seeing content in a web browser is good old trusty HTML.</p>
+<p>HTML documents are made up of tags, which are used to semantically structure content. This means that the tag used to display the content is suited for the type of content that is being shown. For example, if you wanted to display a paragraph of text, you would use a <code>&lt;p&gt;</code> tag. Below is an example of how you would define a paragraph of text in HTML:</p>
+<pre><code>&lt;p&gt;This is a paragraph of text in HTML.&lt;/p&gt;
+</code></pre>
+<p>Notice in the example above how the text is wrapped by both an opening <code>&lt;p&gt;</code> tag and a closing <code>&lt;/p&gt;</code> tag. This is typical in HTML, especially for tags that can contain other nested tags, however there are also self-closing tags that don't require a closing tag. An example of a self closing tag is the <code>&lt;img&gt;</code> tag which is used to display an image (see, semantic). To use an image tag you need to provide a <code>src</code>, where the image you want to display is located on you computer, and some <code>alt</code> text which is a description of what can be seen in the image. The <code>alt</code> text is important because it is used by screen reading software which gives blind or visually impaired users the opportunity to use a website by reading out the content of the page and in this case a description of what is in the image. Below is an example of how you would include an image on your page:</p>
+<pre><code>&lt;img src="images/penguins-dancing.jpg" alt="A photo of penguins dancing"&gt;
+</code></pre>
+<p>In HTML, a tag can have many attributes. In the example above, <code>src</code> and <code>alt</code> are referred to as HTML attributes. They provide information to the browser about the HTML tag. Tags are often nested inside each other, for instance if you want to display a paragraph of text that contains a link you would write something like the following:</p>
+<pre><code>&lt;p&gt;A paragraph containing a &lt;a href="https://google.com"&gt;link to Google&lt;/a&gt;
+</code></pre>
+<p>Here we have introduced the <code>&lt;a&gt;</code> tag, also known as the anchor tag. The text inside the opening and closing tags is what will be displayed in the browser and the value of the <code>href</code> attribute is the URL of the page the user will be taken to upon clicking the link.</p>
+<p>To bring these example to life, let's make a start on our project for the Lorem on Ipsum library. Create a folder called <code>lorem-on-ipsum-library</code> somewhere on you computer. It's conventional to keep folder names in lower case and to replace any spaces with hyphens when working on a web project. Inside this newly created folder create an HTML file called <code>index.html</code>. This file will include the main content and structure of our webpage. Below is what the bare bones of our web page should look like to start with:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="UTF-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;title&gt;Lorem on Ipsum Library&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Lorem on Ipsum Library&lt;/h1&gt;
+        &lt;p&gt;More stuff will be here later.&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Copy the code above and paste it into your <code>index.html</code> file and then we'll take a minute to go through what's going on here as there may be some new tags that we are not familiar with yet. Right at the top we have the document type, this tells the browser that it can expect to see HTML in this file. Next we have the parent <code>&lt;html&gt;</code> container and as you can see this has an attribute called <code>lang</code> which tells the browser that the language used in this file will be English. Notice that the <code>&lt;head&gt;</code> tag that follows is slightly indented, this serves to indicate that this tag is nested inside the previous tag. The browser does not care about the indentation, however it will make it easier for you or any other developer to see what is going on and to make any changes later down the line. Inside the <code>&lt;head&gt;</code> tag there are a couple of <code>&lt;meta&gt;</code> tags and a <code>&lt;title&gt;</code> tag. <code>&lt;meta&gt;</code> tags are used to provide information about the document to the browser. The first example we see here has an attribute <code>charset</code> with a value of <code>UTF-8</code>. This ensures that the character encoding for the document follows the <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> standard. The second <code>&lt;meta&gt;</code> tag provides information about the viewport and we will be looking at the difference this makes in a later post when we explore how web pages are displayed on mobile devices. Finally we have the <code>&lt;title&gt;</code> and this allows us to provide the title of the web page which is displayed in the browser tab. The <code>&lt;head&gt;</code> of an HTML document is not used to display anything on the page, this area is reserved to contain information about the page and to link to additional resources that might be required by the page such as CSS or JS files.</p>
+<p>At the same level as the <code>&lt;head&gt;</code> tag we have the <code>&lt;body&gt;</code> tag. Tags that are at the same level and share a parent tag are referred to as siblings. Now the <code>&lt;body&gt;</code> tag is where the action happens, this is where we start to see stuff appear on the screen. Inside the <code>&lt;body&gt;</code> tag we have another couple of HTML elements, the <code>&lt;h1&gt;</code> and the <code>&lt;p&gt;</code> tags. We've already seen examples of the <code>&lt;p&gt;</code> tag so we know what that is for, however the <code>&lt;h1&gt;</code> represents the most important heading on the page, in this case the name of the website. There are several heading tags available in HTML and each one indicates a level of importance. The heading tags range from <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code>, where <code>&lt;h1&gt;</code> is the most important and <code>&lt;h6&gt;</code> is the least. </p>
+<p>We are now ready to see our web page in action, make sure you have saved your <code>index.html</code> file after pasting the code from the example above and then right click on the file and select 'Open with Chrome' or the browser of your choice. When the page loads you should see something similar to the screenshot below:</p>
+<p><img src="../images/loi-library-bare-bones.jpg" alt="Screenshot of the bare bones of our Lorem on Ipsum library website"></p>
+<p>It might not be much to look at right now, but with each blog post we will be adding more content and making improvements to the website whilst learning about the fundamental building blocks of web development. I hope you have enjoyed reading this post and that I will have a new one ready for you soon. In the meantime, feel free to experiment with this page, try out new tags, add some content and have a bit of fun. One of the aspects of web development that I enjoy the most is that a website is a living document, it changes and evolves over time and there are always opportunities to make it better. Thank you for reading.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2021 itanglo software</p>
+        <p>Logo icon <a href="https://fontawesome.com/icons/laptop-code">laptop-code</a> by <a href="https://fontawesome.com/license">Font Awesome</a></p>
+    </footer>
+</body>
+</html>
