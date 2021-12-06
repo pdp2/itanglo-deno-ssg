@@ -9,4 +9,4 @@ Photo credit: [RC Web Development](http://www.rcwebdev.co.uk/view-client/c64-loa
 
 My late father was Italian and my mother is English, so I had the opportunity to learn from two rather contrasting cultures, which has had its fair share of interesting experiences. The name of this website, itanglo, actually stems from my mixed heritage. I am an Italian-Anglo or Anglo-Italian, but I think itanglo has a better ring to it.
 
-I hope you enjoy reading my blog. If you want to get in touch you can find me on twitter using the handle [@paolodipas](https://twitter.com/paolodipas). You can also see my [Github page](https://github.com/pdp2) which includes the code for this website. capitalization 
+I hope you enjoy reading my blog. If you want to get in touch you can find me on twitter using the handle [@paolodipas](https://twitter.com/paolodipas). You can also see my [Github page](https://github.com/pdp2) which includes the code for this website. 
